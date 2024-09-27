@@ -1,0 +1,268 @@
+- platform: template
+  sensors:
+    pvpc_peajes:
+      friendly_name: "PVPC Peajes" #Se basa en la integración de PVPC para calcular el precio sumando, según energia consumida por punta-valle-llano y día de la semana, "peajes de transporte y distribución y cargos"
+      unique_id: "sensor_pvpc_peajes"
+      value_template: >
+        {% set current_hour = now().hour %}
+        {% set current_day = now().weekday() %}
+        {% set base_price = states('sensor.esios_pvpc') | float %}
+
+        {% if current_day in [5, 6] %}
+          {{ (base_price + 0.002752) | round(5) }}
+        {% elif current_hour >= 0 and current_hour < 8 %}
+          {{ (base_price + 0.002752) | round(5) }}
+        {% elif current_hour >= 8 and current_hour < 10 %}
+          {{ (base_price + 0.027963) | round(5) }}
+        {% elif current_hour >= 10 and current_hour < 14 %}
+          {{ (base_price + 0.076974) | round(5) }}
+        {% elif current_hour >= 14 and current_hour < 18 %}
+          {{ (base_price + 0.027963) | round(5) }}
+        {% elif current_hour >= 18 and current_hour < 22 %}
+          {{ (base_price + 0.076974) | round(5) }}
+        {% elif current_hour >= 22 and current_hour <= 23 %}
+          {{ (base_price + 0.027963) | round(5) }}
+        {% endif %}
+      unit_of_measurement: "€/kWh"
+      attribute_templates:
+        state_class: "{{ state_attr('sensor.esios_pvpc', 'state_class') }}"
+        price_00h: "{{ (state_attr('sensor.esios_pvpc', 'price_00h') + 0.002752) | round(5) }}"
+        price_01h: "{{ (state_attr('sensor.esios_pvpc', 'price_01h') + 0.002752) | round(5) }}"
+        price_02h: "{{ (state_attr('sensor.esios_pvpc', 'price_02h') + 0.002752) | round(5) }}"
+        price_03h: "{{ (state_attr('sensor.esios_pvpc', 'price_03h') + 0.002752) | round(5) }}"
+        price_04h: "{{ (state_attr('sensor.esios_pvpc', 'price_04h') + 0.002752) | round(5) }}"
+        price_05h: "{{ (state_attr('sensor.esios_pvpc', 'price_05h') + 0.002752) | round(5) }}"
+        price_06h: "{{ (state_attr('sensor.esios_pvpc', 'price_06h') + 0.002752) | round(5) }}"
+        price_07h: "{{ (state_attr('sensor.esios_pvpc', 'price_07h') + 0.002752) | round(5) }}"
+        price_08h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_08h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_09h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_09h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_10h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_10h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_11h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_11h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_12h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_12h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_13h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_13h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_14h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_14h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_15h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_15h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_16h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_16h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_17h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_17h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_18h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_18h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_19h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_19h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_20h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_20h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_21h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_21h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_22h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_22h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_23h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_23h') | float %}
+          {% if now().weekday() in [5, 6] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_00h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_00h') + 0.002752) | round(5) }}"
+        price_next_day_01h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_01h') + 0.002752) | round(5) }}"
+        price_next_day_02h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_02h') + 0.002752) | round(5) }}"
+        price_next_day_03h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_03h') + 0.002752) | round(5) }}"
+        price_next_day_04h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_04h') + 0.002752) | round(5) }}"
+        price_next_day_05h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_05h') + 0.002752) | round(5) }}"
+        price_next_day_06h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_06h') + 0.002752) | round(5) }}"
+        price_next_day_07h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_07h') + 0.002752) | round(5) }}"
+        price_next_day_08h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_08h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_09h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_09h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_10h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_10h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_11h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_11h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_12h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_12h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_13h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_13h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_14h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_14h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_15h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_15h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_16h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_16h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_17h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_17h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_18h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_18h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_19h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_19h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_20h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_20h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_21h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_21h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.076974) | round(5) }}
+          {% endif %}
+        price_next_day_22h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_22h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
+        price_next_day_23h: >
+          {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_23h') | float %}
+          {% if now().weekday() in [4, 5] %}
+            {{ (base_price + 0.002752) | round(5) }}
+          {% else %}
+            {{ (base_price + 0.027963) | round(5) }}
+          {% endif %}
