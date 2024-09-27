@@ -1,0 +1,506 @@
+- platform: template
+  sensors:
+    pvpc_peajes_minimo_4horas_test1:
+      friendly_name: "PVPC PEAJES mínimo 4 horas test1"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set minute = now().minute %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i + 24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para los próximos 4 intervalos #}
+        {% if ns.hoursPrices|length < 4 %}
+          unavailable
+        {% else %}
+          {# Buscar el período de 4 horas consecutivas con el precio más bajo #}
+          {% set ns2 = namespace(fourHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 3) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] + ns.hoursPrices[i+2][1] + ns.hoursPrices[i+3][1] %}
+            {% set ns2.fourHoursPrices = ns2.fourHoursPrices + [(ns.hoursPrices[i][0], total_price)] %}
+          {% endfor %}
+
+          {# Encontrar el mejor período de 4 horas #}
+          {% set best = (ns2.fourHoursPrices|sort(attribute=1))[0][0] %}
+          {# Calcular los minutos restantes hasta el mejor período #}
+          {% if best == hour %}
+            0
+          {% else %}
+            {% set minutes_until_best = ((best - hour) * 60) - minute %}
+            {% if minutes_until_best >= 0 %}
+              {{ minutes_until_best }}
+            {% else %}
+              unavailable
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      unit_of_measurement: "minutos"
+      unique_id: pvpc_peajes_minimo_4horas_test1
+
+- platform: template
+  sensors:
+    pvpc_peajes_minimo_3horas_test1:
+      friendly_name: "PVPC PEAJES mínimo 3 horas test1"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set minute = now().minute %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para los próximos 3 intervalos #}
+        {% if ns.hoursPrices|length < 3 %}
+          unavailable
+        {% else %}
+          {# Buscar el período de 3 horas consecutivas con el precio más bajo #}
+          {% set ns2 = namespace(threeHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 2) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] + ns.hoursPrices[i+2][1] %}
+            {% set ns2.threeHoursPrices = ns2.threeHoursPrices + [(ns.hoursPrices[i][0], total_price)] %}
+          {% endfor %}
+          
+          {% set best = (ns2.threeHoursPrices|sort(attribute=1))[0][0] %}
+          {# Calcular los minutos restantes hasta el mejor período #}
+          {% if best == hour %}
+            0
+          {% else %}
+            {% set minutes_until_best = ((best - hour) * 60) - minute %}
+            {% if minutes_until_best >= 0 %}
+              {{ minutes_until_best }}
+            {% else %}
+              unavailable
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      unit_of_measurement: "minutos"
+      unique_id: pvpc_peajes_minimo_3horas_test1
+
+- platform: template
+  sensors:
+    pvpc_peajes_4horas_media_precio_test1:
+      friendly_name: "Media precio PEAJES 4 horas PVPC test1"
+      unit_of_measurement: "€/kWh"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set minute = now().minute %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para los próximos 4 intervalos #}
+        {% if ns.hoursPrices|length < 4 %}
+          unavailable
+        {% else %}
+          {# Calcular la media del precio en intervalos de 4 horas consecutivas #}
+          {% set ns2 = namespace(fourHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 3) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] + ns.hoursPrices[i+2][1] + ns.hoursPrices[i+3][1] %}
+            {% set average_price = total_price / 4 %}
+            {% set ns2.fourHoursPrices = ns2.fourHoursPrices + [(ns.hoursPrices[i][0], average_price)] %}
+          {% endfor %}
+
+          {# Obtener la media más baja y redondearla a 4 decimales #}
+          {{ (ns2.fourHoursPrices|sort(attribute=1))[0][1]|round(4) }}
+        {% endif %}
+      unique_id: pvpc_peajes_4horas_media_precio_test1
+
+- platform: template
+  sensors:
+    pvpc_peajes_minimo_2horas_test1:
+      friendly_name: "PVPC PEAJES mínimo 2 horas test1"
+      unit_of_measurement: "minutos"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set minute = now().minute %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para los próximos 2 intervalos #}
+        {% if ns.hoursPrices|length < 2 %}
+          unavailable
+        {% else %}
+          {# Calcular el precio acumulado en intervalos de 2 horas consecutivas #}
+          {% set ns2 = namespace(twoHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 1) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] %}
+            {% set ns2.twoHoursPrices = ns2.twoHoursPrices + [(ns.hoursPrices[i][0], total_price)] %}
+          {% endfor %}
+
+          {# Encontrar el intervalo de 2 horas con el menor precio acumulado #}
+          {% set best = (ns2.twoHoursPrices|sort(attribute=1))[0][0] %}
+
+          {# Si la mejor hora es la actual, devolver 0, de lo contrario calcular minutos restantes #}
+          {% if best == hour %}
+            0
+          {% else %}
+            {{ ((best-hour)*60) - minute }}
+          {% endif %}
+        {% endif %}
+      unique_id: pvpc_peajes_minimo_2horas_tes1
+
+- platform: template
+  sensors:
+    pvpc_peajes_4horas_media_precio_test1:
+      friendly_name: "Media precio PEAJES 4 horas PVPC test1"
+      unit_of_measurement: "€/kWh"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para los próximos 4 intervalos #}
+        {% if ns.hoursPrices|length < 4 %}
+          unavailable
+        {% else %}
+          {# Calcular la media del precio acumulado en intervalos de 4 horas consecutivas #}
+          {% set ns2 = namespace(fourHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 3) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] + ns.hoursPrices[i+2][1] + ns.hoursPrices[i+3][1] %}
+            {% set average_price = total_price / 4 %}
+            {% set ns2.fourHoursPrices = ns2.fourHoursPrices + [(ns.hoursPrices[i][0], average_price)] %}
+          {% endfor %}
+
+          {# Devolver el valor medio más bajo encontrado #}
+          {{ (ns2.fourHoursPrices|sort(attribute=1))[0][1]|round(4) }}
+        {% endif %}
+      unique_id: pvpc_peajes_4horas_media_precio_test1
+
+- platform: template
+  sensors:
+    pvpc_peajes_3horas_media_precio_test1:
+      friendly_name: "Media precio PEAJES 3 horas PVPC test1"
+      unit_of_measurement: "€/kWh"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para los próximos 3 intervalos #}
+        {% if ns.hoursPrices|length < 3 %}
+          unavailable
+        {% else %}
+          {# Calcular la media del precio acumulado en intervalos de 3 horas consecutivas #}
+          {% set ns2 = namespace(threeHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 2) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] + ns.hoursPrices[i+2][1] %}
+            {% set average_price = total_price / 3 %}
+            {% set ns2.threeHoursPrices = ns2.threeHoursPrices + [(ns.hoursPrices[i][0], average_price)] %}
+          {% endfor %}
+
+          {# Devolver el valor medio más bajo encontrado #}
+          {{ (ns2.threeHoursPrices|sort(attribute=1))[0][1]|round(4) }}
+        {% endif %}
+      unique_id: pvpc_peajes_3horas_media_precio_test1
+
+- platform: template
+  sensors:
+    pvpc_peajes_2horas_media_precio_test1:
+      friendly_name: "Media precio PEAJES 2 horas PVPC test1"
+      unit_of_measurement: "€/kWh"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para los próximos 2 intervalos #}
+        {% if ns.hoursPrices|length < 2 %}
+          unavailable
+        {% else %}
+          {# Calcular la media del precio acumulado en intervalos de 2 horas consecutivas #}
+          {% set ns2 = namespace(twoHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 1) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] %}
+            {% set average_price = total_price / 2 %}
+            {% set ns2.twoHoursPrices = ns2.twoHoursPrices + [(ns.hoursPrices[i][0], average_price)] %}
+          {% endfor %}
+
+          {# Devolver el valor medio más bajo encontrado #}
+          {{ (ns2.twoHoursPrices|sort(attribute=1))[0][1]|round(4) }}
+        {% endif %}
+      unique_id: pvpc_peajes_2horas_media_precio_test1
+
+- platform: template
+  sensors:
+    pvpc_inicio_peajes_4horas_test1:
+      friendly_name: "PVPC inicio PEAJES 4 horas test1"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set minute = now().minute %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual del sensor pvpc_peajes #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente del sensor pvpc_peajes si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para calcular el mínimo de 4 horas consecutivas #}
+        {% if ns.hoursPrices|length < 4 %}
+          unavailable
+        {% else %}
+          {# Calcular el precio acumulado de 4 horas consecutivas #}
+          {% set ns2 = namespace(fourHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 3) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] + ns.hoursPrices[i+2][1] + ns.hoursPrices[i+3][1] %}
+            {% set ns2.fourHoursPrices = ns2.fourHoursPrices + [(ns.hoursPrices[i][0], total_price)] %}
+          {% endfor %}
+
+          {# Encontrar la mejor hora para las 4 horas consecutivas con el precio más bajo #}
+          {% set best = (ns2.fourHoursPrices|sort(attribute=1))[0][0] %}
+
+          {# Ajustar la hora si pertenece al día siguiente #}
+          {% if best >= 24 %}
+            {{ "%02d"|format(best-24) }}:00
+          {% else %}
+            {{ "%02d"|format(best) }}:00
+          {% endif %}
+        {% endif %}
+      unique_id: pvpc_inicio_peajes_4horas_test1
+
+- platform: template
+  sensors:
+    pvpc_inicio_peajes_3horas_test1:
+      friendly_name: "PVPC inicio PEAJES 3 horas test1"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set minute = now().minute %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual del sensor pvpc_peajes #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente del sensor pvpc_peajes si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para calcular el mínimo de 3 horas consecutivas #}
+        {% if ns.hoursPrices|length < 3 %}
+          unavailable
+        {% else %}
+          {# Calcular el precio acumulado de 3 horas consecutivas #}
+          {% set ns2 = namespace(threeHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 2) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] + ns.hoursPrices[i+2][1] %}
+            {% set ns2.threeHoursPrices = ns2.threeHoursPrices + [(ns.hoursPrices[i][0], total_price)] %}
+          {% endfor %}
+
+          {# Encontrar la mejor hora para las 3 horas consecutivas con el precio más bajo #}
+          {% set best = (ns2.threeHoursPrices|sort(attribute=1))[0][0] %}
+
+          {# Ajustar la hora si pertenece al día siguiente #}
+          {% if best >= 24 %}
+            {{ "%02d"|format(best-24) }}:00
+          {% else %}
+            {{ "%02d"|format(best) }}:00
+          {% endif %}
+        {% endif %}
+      unique_id: pvpc_inicio_peajes_3horas_test1
+
+- platform: template
+  sensors:
+    pvpc_inicio_peajes_2horas_test1:
+      friendly_name: "PVPC inicio PEAJES 2 horas test1"
+      value_template: >
+        {% set hour = now().hour %}
+        {% set minute = now().minute %}
+        {% set ns = namespace(hoursPrices=[]) %}
+
+        {# Recoger precios del día actual del sensor pvpc_peajes #}
+        {% for i in range(24) %}
+          {% if i >= hour %}
+            {% set hour_attr = "price_" + ("%02d"|format(i)) + "h" %}
+            {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+            {% if price is not none and price != 'unavailable' %}
+              {% set ns.hoursPrices = ns.hoursPrices + [(i, price | float)] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# Recoger precios del día siguiente del sensor pvpc_peajes si están disponibles #}
+        {% for i in range(24) %}
+          {% set hour_attr = "price_next_day_" + ("%02d"|format(i)) + "h" %}
+          {% set price = state_attr("sensor.pvpc_peajes", hour_attr) %}
+          {% if price is not none and price != 'unavailable' %}
+            {% set ns.hoursPrices = ns.hoursPrices + [(i+24, price | float)] %}
+          {% endif %}
+        {% endfor %}
+
+        {# Verificar si hay suficientes datos para calcular el mínimo de 2 horas consecutivas #}
+        {% if ns.hoursPrices|length < 2 %}
+          unavailable
+        {% else %}
+          {# Calcular el precio acumulado de 2 horas consecutivas #}
+          {% set ns2 = namespace(twoHoursPrices=[]) %}
+          {% for i in range(ns.hoursPrices|length - 1) %}
+            {% set total_price = ns.hoursPrices[i][1] + ns.hoursPrices[i+1][1] %}
+            {% set ns2.twoHoursPrices = ns2.twoHoursPrices + [(ns.hoursPrices[i][0], total_price)] %}
+          {% endfor %}
+
+          {# Encontrar la mejor hora para las 2 horas consecutivas con el precio más bajo #}
+          {% set best = (ns2.twoHoursPrices|sort(attribute=1))[0][0] %}
+
+          {# Ajustar la hora si pertenece al día siguiente #}
+          {% if best >= 24 %}
+            {{ "%02d"|format(best-24) }}:00
+          {% else %}
+            {{ "%02d"|format(best) }}:00
+          {% endif %}
+        {% endif %}
+      unique_id: pvpc_inicio_peajes_2horas_test1
