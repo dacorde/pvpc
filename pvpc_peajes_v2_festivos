@@ -156,7 +156,10 @@
         price_next_day_07h: "{{ (state_attr('sensor.esios_pvpc', 'price_next_day_07h') + 0.002752) | round(5) }}"
         price_next_day_08h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_08h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -164,7 +167,10 @@
           {% endif %}
         price_next_day_09h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_09h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -172,7 +178,10 @@
           {% endif %}
         price_next_day_10h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_10h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -180,7 +189,10 @@
           {% endif %}
         price_next_day_11h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_11h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -188,7 +200,10 @@
           {% endif %}
         price_next_day_12h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_12h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -196,7 +211,10 @@
           {% endif %}
         price_next_day_13h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_13h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -204,7 +222,10 @@
           {% endif %}
         price_next_day_14h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_14h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -212,7 +233,10 @@
           {% endif %}
         price_next_day_15h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_15h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -220,7 +244,10 @@
           {% endif %}
         price_next_day_16h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_16h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -228,7 +255,10 @@
           {% endif %}
         price_next_day_17h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_17h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -236,7 +266,10 @@
           {% endif %}
         price_next_day_18h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_18h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -244,7 +277,10 @@
           {% endif %}
         price_next_day_19h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_19h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -252,7 +288,10 @@
           {% endif %}
         price_next_day_20h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_20h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -260,7 +299,10 @@
           {% endif %}
         price_next_day_21h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_21h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -268,7 +310,10 @@
           {% endif %}
         price_next_day_22h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_22h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
@@ -276,7 +321,10 @@
           {% endif %}
         price_next_day_23h: >
           {% set base_price = state_attr('sensor.esios_pvpc', 'price_next_day_23h') | float %}
-          {% set is_festivo_tomorrow = is_state('calendar.festivos', 'on', (now() + timedelta(days=1)).date()) %}
+          {% set tomorrow = (now() + timedelta(days=1)).strftime('%Y-%m-%d') %}
+          {% set festivo_start = as_datetime(state_attr('calendar.festivos', 'start_time')).strftime('%Y-%m-%d') %}
+          {% set festivo_end = as_datetime(state_attr('calendar.festivos', 'end_time')).strftime('%Y-%m-%d') %}
+          {% set is_festivo_tomorrow = festivo_start <= tomorrow < festivo_end %}
           {% if now().weekday() in [4, 5] or is_festivo_tomorrow %}
             {{ (base_price + 0.002752) | round(5) }}
           {% else %}
